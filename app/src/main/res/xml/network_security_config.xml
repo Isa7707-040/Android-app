@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Development configuration.
+  The desktop/API uses a self-signed HTTPS certificate on the local network,
+  and may also be reached over plain HTTP. We therefore allow cleartext and
+  trust user-added certificates so the app can talk to the local server.
+  For production, restrict this to your real domain with a valid certificate.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

@@ -1,0 +1,63 @@
+name: APK yasash (Build APK)
+
+# Bu workflow ilovaning o'rnatiladigan APK faylini avtomatik yasaydi.
+# Ishga tushishi:
+#  - feature/main branch'ga push qilinganda
+#  - Actions bo'limidan qo'lda "Run workflow" bosilganda
+on:
+  push:
+    branches:
+      - main
+      - master
+      - "feature/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # APK'ni Release'ga joylash uchun
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodni olish
+        uses: actions/checkout@v4
+
+      - name: JDK 17 o'rnatish
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Android SDK tayyorlash
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle wrapper'ni tiklash (jar yo'q bo'lsa)
+        run: gradle wrapper --gradle-version 8.9 --distribution-type bin
+
+      - name: APK yasash (debug)
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: APK'ni nomlash
+        run: |
+          mkdir -p out
+          cp app/build/outputs/apk/debug/app-debug.apk out/JESKO-Savdo.apk
+
+      # 1) Har bir build'da APK artifact sifatida saqlanadi (Actions sahifasidan yuklab olish mumkin)
+      - name: APK'ni artifact qilib yuklash
+        uses: actions/upload-artifact@v4
+        with:
+          name: JESKO-Savdo-APK
+          path: out/JESKO-Savdo.apk
+          if-no-files-found: error
+
+      # 2) Qo'shimcha: to'g'ridan-to'g'ri yuklab olish uchun "android-latest" Release'ga joylanadi
+      - name: APK'ni Release'ga joylash
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-latest
+          name: "JESKO Savdo — oxirgi APK"
+          body: "Eng so'nggi avtomatik yasalgan APK. Telefonga o'rnatish uchun JESKO-Savdo.apk faylini yuklab oling."
+          files: out/JESKO-Savdo.apk
+          prerelease: true

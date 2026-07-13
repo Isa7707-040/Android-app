@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- JESKO brand palette (matches Desktop) -->
+    <color name="bg_dark">#0B1120</color>
+    <color name="bg_panel">#0F172A</color>
+    <color name="card_bg">#131D33</color>
+    <color name="gold">#F59E0B</color>
+    <color name="gold_light">#FCD34D</color>
+    <color name="text_primary">#F8FAFC</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>
